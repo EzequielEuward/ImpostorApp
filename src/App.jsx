@@ -9,7 +9,7 @@ import {
   DebateTimer,
   VotingScreen,
   ResultsScreen,
-} from "./components/index.js";
+} from "./components/";
 import { getRandomWord } from "./lib/word-category";
 
 export const App = () => {
