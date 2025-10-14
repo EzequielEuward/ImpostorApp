@@ -31,21 +31,22 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
   return (
     <Box
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
+        py: 4,
+        px: 2,
         background: "transparent",
-        color: "#fff",
       }}
     >
       {/* Header */}
       <Box textAlign="center" sx={{ mb: 3 }}>
         <Box
           sx={{
-            width: 70,
-            height: 70,
+            width: 80,
+            height: 80,
             mx: "auto",
             borderRadius: "50%",
             bgcolor: "rgba(255,75,139,0.15)",
@@ -53,16 +54,17 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
             alignItems: "center",
             justifyContent: "center",
             mb: 1,
-            boxShadow: "0 0 25px rgba(255,75,139,0.3)",
+            boxShadow: "0 0 25px rgba(255,75,139,0.4)",
           }}
         >
-          <EmojiEventsIcon sx={{ fontSize: 38, color: "#fff" }} />
+          <EmojiEventsIcon sx={{ fontSize: 42, color: "#fff" }} />
         </Box>
         <Typography
           variant="h4"
           fontWeight="bold"
           sx={{
-            textShadow: "0 0 10px rgba(232,85,255,0.5)",
+            color: "#fff",
+            textShadow: "0 0 12px rgba(232,85,255,0.6)",
           }}
         >
           Resultado Ronda {round}
@@ -72,13 +74,14 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
       {/* Card principal */}
       <Card
         sx={{
-          p: 3,
-          width: "95%",
-          maxWidth: 420,
+          width: "100%",
+          maxWidth: 600, // <-- más ancho
           borderRadius: 4,
+          p: { xs: 3, sm: 4 },
           border: "1px solid rgba(255,255,255,0.08)",
-          background: "linear-gradient(180deg, #141428 0%, #0e0e1c 100%)",
+          background: "linear-gradient(180deg, #151529 0%, #0d0d1a 100%)",
           boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+          color: "#fff",
           display: "flex",
           flexDirection: "column",
           gap: 3,
@@ -91,17 +94,19 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
               textAlign: "center",
               p: 3,
               borderRadius: 3,
-              border: "1px solid rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.1)",
               background: "rgba(255,255,255,0.05)",
+              color: "#fff",
             }}
           >
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography variant="h6" fontWeight="bold">
               Jugador Eliminado
             </Typography>
             <Typography
-              variant="h4"
+              variant="h3"
               fontWeight="bold"
-              sx={{ mt: 1, color: "#ff3b3b" }}
+              color="error"
+              sx={{ mt: 1 }}
             >
               {eliminatedPlayer.name}
             </Typography>
@@ -110,15 +115,21 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
 
             {eliminatedPlayer.isImpostor ? (
               <Box>
-                <Typography variant="h5" fontWeight="bold" color="secondary">
+                <Typography
+                  variant="h5"
+                  fontWeight="bold"
+                  sx={{ color: "#ff4b8b" }}
+                >
                   ¡ERA EL IMPOSTOR!
                 </Typography>
-                <Typography sx={{ opacity: 0.8 }}>
+                <Typography sx={{ color: "rgba(255,255,255,0.7)" }}>
                   Los civiles ganaron esta ronda
                 </Typography>
               </Box>
             ) : (
-              <Typography sx={{ opacity: 0.9 }}>Era un civil</Typography>
+              <Typography variant="subtitle1" fontWeight="bold">
+                Era un civil
+              </Typography>
             )}
           </Paper>
         )}
@@ -127,25 +138,31 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
         {!impostorEliminated && activePlayers.length > 2 && (
           <Box>
             <Typography
-              variant="subtitle1"
+              variant="h6"
               fontWeight="bold"
-              sx={{ mb: 1, color: "#fff" }}
+              sx={{ mb: 2, color: "#fff" }}
             >
               Jugadores Restantes
             </Typography>
-            <Box display="flex" flexDirection="column" gap={1}>
+            <Box display="flex" flexWrap="wrap" gap={1.5} justifyContent="center">
               {activePlayers.map((player) => (
                 <Paper
                   key={player.id}
                   sx={{
-                    textAlign: "center",
-                    p: 1.5,
+                    px: 3,
+                    py: 1.5,
                     borderRadius: 2,
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    background: "rgba(255,255,255,0.06)",
+                    textAlign: "center",
+                    flex: { xs: "1 1 45%", sm: "1 1 30%" },
                   }}
                 >
-                  <Typography variant="h6" fontWeight="500">
+                  <Typography
+                    variant="h6"
+                    fontWeight="500"
+                    sx={{ color: "#fff" }}
+                  >
                     {player.name}
                   </Typography>
                 </Paper>
@@ -154,30 +171,32 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
           </Box>
         )}
 
-        {/* Victoria impostor */}
+        {/* Mensaje de victoria del impostor */}
         {!impostorEliminated && activePlayers.length <= 2 && (
           <Paper
             sx={{
               textAlign: "center",
               p: 3,
+              border: "1px solid rgba(211,47,47,0.3)",
+              background: "rgba(211,47,47,0.15)",
               borderRadius: 3,
-              border: "1px solid rgba(255,75,139,0.3)",
-              background: "rgba(255,75,139,0.1)",
+              color: "#fff",
             }}
           >
             <Typography variant="h5" fontWeight="bold" color="error">
               ¡El impostor ganó!
             </Typography>
-            <Typography sx={{ mt: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{ mt: 1, color: "rgba(255,255,255,0.8)" }}
+            >
               Era:{" "}
-              <Typography component="span" fontWeight="bold">
+              <Typography component="span" fontWeight="bold" sx={{ color: "#fff" }}>
                 {impostor?.name}
               </Typography>
             </Typography>
           </Paper>
         )}
-
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
         {/* Botón final */}
         <Button
@@ -197,12 +216,12 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
             )
           }
           sx={{
-            height: 56,
-            fontSize: "1rem",
+            height: 64,
+            fontSize: "1.1rem",
             fontWeight: "bold",
             textTransform: "none",
             borderRadius: 3,
-            mt: 1,
+            mt: 2,
             boxShadow: "0 0 20px rgba(255,75,139,0.4)",
             "&:hover": {
               boxShadow: "0 0 30px rgba(255,75,139,0.6)",
@@ -214,6 +233,13 @@ export const ResultsScreen = ({ players, onNextRound, onRestart, round }) => {
             : "Siguiente Ronda"}
         </Button>
       </Card>
+
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </Box>
   );
 };
