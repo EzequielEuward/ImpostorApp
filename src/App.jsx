@@ -11,6 +11,7 @@ import {
   ResultsScreen,
 } from "./components";
 import { getRandomWord } from "./lib/word-category";
+import {GameLayout} from "./layout/GameLayout";
 
 export const App = () => {
   const [gameState, setGameState] = useState("welcome");
@@ -21,7 +22,7 @@ export const App = () => {
   const [gameMode, setGameMode] = useState("classic");
   const [debateMinutes, setDebateMinutes] = useState(2);
   const [debateTimeLeft, setDebateTimeLeft] = useState(debateMinutes * 60);
-  const [debateIsRunning, setDebateIsRunning] = useState(false); // Cambiado a false inicialmente
+  const [debateIsRunning, setDebateIsRunning] = useState(false);
   const [isDarkMode] = useState(false);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export const App = () => {
       setDebateTimeLeft(debateMinutes * 60);
       setDebateIsRunning(true);
     }
-  }, [round, gameState, debateMinutes]); // Agregar gameState como dependencia
+  }, [round, gameState, debateMinutes]);
 
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -118,12 +119,10 @@ export const App = () => {
     setRound(1);
     setDebateTimeLeft(debateMinutes * 60);
     setDebateIsRunning(false);
-    setGameState("welcome");
+    setGameState("config");
   };
 
-  // Función para volver al debate desde la votación
   const handleBackToDebate = () => {
-    // Solo permitir volver si todavía hay tiempo
     if (debateTimeLeft > 0) {
       setGameState("debate");
     }
@@ -134,7 +133,7 @@ export const App = () => {
       <CssBaseline />
       <Box
         sx={{
-          height: "100vh",
+          minHeight: "100vh",
           width: "100%",
           display: "flex",
           alignItems: "center",
@@ -143,25 +142,10 @@ export const App = () => {
           color: theme.palette.text.primary,
           transition: "all 0.3s ease",
           overflow: "hidden",
-          p: { xs: 2, sm: 3 },
+          p: { xs: 0, sm: 2 }, // Sin padding en móvil, con padding en desktop
         }}
       >
-        <Box
-          sx={{
-            width: "100%",
-            maxWidth: {
-              xs: "100%",
-              sm: 500,
-              md: 700,
-              lg: 900,
-              xl: 1100,
-            },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto"
-          }}
-        >
+        <GameLayout>
           {gameState === "welcome" && <WelcomeScreen onStart={startGame} />}
           {gameState === "config" && (
             <GameConfig onBack={backToWelcome} onContinue={handleGameConfig} />
@@ -203,7 +187,7 @@ export const App = () => {
               round={round}
             />
           )}
-        </Box>
+        </GameLayout>
       </Box>
     </ThemeProvider>
   );

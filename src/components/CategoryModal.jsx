@@ -10,6 +10,8 @@ import {
   Menu,
   MenuItem,
   Box,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
@@ -24,6 +26,9 @@ export const CategoryModal = ({
 }) => {
   const [selected, setSelected] = useState(selectedCategory || "");
   const [anchorEl, setAnchorEl] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleDropdownOpen = (event) => setAnchorEl(event.currentTarget);
   const handleDropdownClose = () => setAnchorEl(null);
@@ -50,14 +55,41 @@ export const CategoryModal = ({
       onClose={onClose}
       maxWidth="xs"
       fullWidth
+      fullScreen={fullScreen}
       PaperProps={{
         sx: {
-          borderRadius: 4,
-          bgcolor: "#100C1C",
-          color: "white",
-          p: 3,
-          boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
+          borderRadius: {
+            xs: 0, // Sin bordes redondeados en móvil
+            sm: 4, // Bordes redondeados en desktop
+          },
+          bgcolor: "background.paper",
+          p: {
+            xs: 2, // Menos padding en móvil
+            sm: 3, // Padding normal en desktop
+          },
+          boxShadow: {
+            xs: 0, // Sin sombra en móvil (ocupará pantalla completa)
+            sm: 4, // Sombra en desktop
+          },
+          border: {
+            xs: "none", // Sin borde en móvil
+            sm: "1px solid", // Borde en desktop
+          },
+          borderColor: {
+            sm: "divider",
+          },
+          minHeight: {
+            xs: "60vh", // Altura mínima en móvil
+            sm: "auto", // Altura automática en desktop
+          },
+          margin: {
+            xs: 0, // Sin margen en móvil
+            sm: "32px", // Margen en desktop
+          },
+          maxHeight: {
+            xs: "90vh", // Máxima altura en móvil
+            sm: "80vh", // Máxima altura en desktop
+          },
         },
       }}
     >
@@ -72,8 +104,11 @@ export const CategoryModal = ({
           sx={{
             p: 0,
             fontWeight: "bold",
-            color: "#E072E5",
-            fontSize: 24,
+            color: "primary.main",
+            fontSize: {
+              xs: "1.25rem", // Título más pequeño en móvil
+              sm: "1.5rem", // Tamaño normal en desktop
+            },
           }}
         >
           Categoría de Palabras
@@ -81,17 +116,42 @@ export const CategoryModal = ({
         <IconButton
           onClick={onClose}
           sx={{
-            color: "rgba(255, 255, 255, 0.7)",
-            "&:hover": { color: "white" },
+            color: "text.secondary",
+            "&:hover": { 
+              color: "text.primary",
+              backgroundColor: "action.hover",
+            },
+            fontSize: {
+              xs: "1.5rem", // Icono más grande en móvil para mejor táctil
+              sm: "1.25rem", // Tamaño normal en desktop
+            },
           }}
         >
-          <CloseIcon />
+          <CloseIcon fontSize="inherit" />
         </IconButton>
       </Box>
 
       {/* Contenido */}
-      <DialogContent sx={{ p: 0 }}>
-        <Typography sx={{ mb: 1.5, color: "white", fontWeight: "bold" }}>
+      <DialogContent 
+        sx={{ 
+          p: 0,
+          flex: {
+            xs: 1, // Ocupa espacio disponible en móvil
+            sm: "none", // Altura automática en desktop
+          },
+        }}
+      >
+        <Typography 
+          sx={{ 
+            mb: 1.5, 
+            color: "text.primary", 
+            fontWeight: "bold",
+            fontSize: {
+              xs: "0.9rem", // Texto más pequeño en móvil
+              sm: "1rem", // Tamaño normal en desktop
+            }
+          }}
+        >
           Selecciona una categoría
         </Typography>
 
@@ -101,24 +161,40 @@ export const CategoryModal = ({
           onClick={handleDropdownOpen}
           endIcon={<ExpandMoreIcon />}
           sx={{
-            height: 56,
+            height: {
+              xs: 48, // Altura menor en móvil
+              sm: 56, // Altura normal en desktop
+            },
             justifyContent: "space-between",
             borderRadius: 2,
             textTransform: "none",
-            bgcolor: "#1F1A30",
+            bgcolor: "action.hover",
             border: "1px solid",
-            borderColor: "rgba(224, 114, 229, 0.3)",
-            color: selected ? "white" : "rgba(255, 255, 255, 0.7)",
+            borderColor: "divider",
+            color: selected ? "text.primary" : "text.secondary",
             fontWeight: 500,
             pl: 2,
             pr: 1.5,
+            fontSize: {
+              xs: "0.9rem", // Texto más pequeño en móvil
+              sm: "1rem", // Tamaño normal en desktop
+            },
             "&:hover": {
-              bgcolor: "#1F1A30",
-              borderColor: "rgba(224, 114, 229, 0.7)",
+              bgcolor: "action.selected",
+              borderColor: "primary.main",
             },
           }}
         >
-          {selectedCategoryName}
+          <Typography 
+            noWrap
+            sx={{
+              flex: 1,
+              textAlign: "left",
+              fontSize: "inherit",
+            }}
+          >
+            {selectedCategoryName}
+          </Typography>
         </Button>
 
         {/* Menú */}
@@ -126,16 +202,36 @@ export const CategoryModal = ({
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleDropdownClose}
-          MenuListProps={{ sx: { py: 0.5 } }}
+          MenuListProps={{ 
+            sx: { 
+              py: 0.5,
+              maxHeight: {
+                xs: "60vh", // Altura máxima en móvil
+                sm: "40vh", // Altura máxima en desktop
+              },
+            } 
+          }}
           PaperProps={{
             sx: {
               mt: 1,
               borderRadius: 2,
-              bgcolor: "#1F1A30",
-              border: "1px solid rgba(224, 114, 229, 0.7)",
-              color: "white",
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "divider",
               width: anchorEl ? anchorEl.clientWidth : undefined,
+              maxWidth: {
+                xs: "calc(100vw - 32px)", // Ancho máximo en móvil
+                sm: "none", // Ancho automático en desktop
+              },
             },
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
           }}
         >
           {WORD_CATEGORIES.map((category) => (
@@ -145,12 +241,20 @@ export const CategoryModal = ({
               onClick={() => handleSelectCategory(category.id)}
               sx={{
                 fontWeight: selected === category.id ? "bold" : "normal",
+                fontSize: {
+                  xs: "0.9rem", // Texto más pequeño en móvil
+                  sm: "1rem", // Tamaño normal en desktop
+                },
+                py: {
+                  xs: 1.5, // Más padding vertical en móvil
+                  sm: 1, // Padding normal en desktop
+                },
                 "&.Mui-selected": {
-                  bgcolor: "rgba(224, 114, 229, 0.15)",
-                  color: "#E072E5",
+                  bgcolor: "action.selected",
+                  color: "primary.main",
                 },
                 "&:hover": {
-                  bgcolor: "rgba(224, 114, 229, 0.1)",
+                  bgcolor: "action.hover",
                 },
               }}
             >
@@ -161,7 +265,22 @@ export const CategoryModal = ({
       </DialogContent>
 
       {/* Botón Confirmar */}
-      <DialogActions sx={{ p: 0, mt: 3 }}>
+      <DialogActions 
+        sx={{ 
+          p: 0, 
+          mt: 3,
+          position: {
+            xs: "sticky", // Sticky en móvil para mejor accesibilidad
+            sm: "static", // Normal en desktop
+          },
+          bottom: 0,
+          backgroundColor: "background.paper",
+          pt: {
+            xs: 2, // Padding superior en móvil
+            sm: 0, // Sin padding en desktop
+          },
+        }}
+      >
         <Button
           fullWidth
           variant="contained"
@@ -170,19 +289,24 @@ export const CategoryModal = ({
           onClick={handleConfirm}
           startIcon={<CheckIcon />}
           sx={{
-            height: 56,
-            fontSize: "1rem",
+            height: {
+              xs: 48, // Altura menor en móvil
+              sm: 56, // Altura normal en desktop
+            },
+            fontSize: {
+              xs: "0.9rem", // Texto más pequeño en móvil
+              sm: "1rem", // Tamaño normal en desktop
+            },
             fontWeight: "bold",
             borderRadius: 2,
             textTransform: "none",
-            bgcolor: "#9E3C3C",
-            color: "rgba(255, 255, 255, 0.9)",
+            boxShadow: 2,
             "&:hover": {
-              bgcolor: "#B44F4F",
+              boxShadow: 4,
             },
             "&.Mui-disabled": {
-              bgcolor: "rgba(158, 60, 60, 0.4)",
-              color: "rgba(255, 255, 255, 0.4)",
+              bgcolor: "action.disabled",
+              color: "text.disabled",
             },
           }}
         >

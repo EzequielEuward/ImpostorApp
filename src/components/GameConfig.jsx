@@ -5,7 +5,6 @@ import {
   Card,
   Typography,
   IconButton,
-  Container,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -69,32 +68,49 @@ export const GameConfig = ({ onBack, onContinue }) => {
   };
 
   return (
-    <Container
-      maxWidth="sm"
+    <Box
       sx={{
-        py: 4,
-        height: "100vh",
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        border: "1px solid rgba(255,255,255,0.08)",
-        background: "linear-gradient(180deg, #151529 0%, #0d0d1a 100%)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+        overflow: "hidden",
       }}
     >
-      {/* Botón volver */}
-      <Box display="flex" justifyContent="flex-start" mb={3}>
+      {/* Botón volver - posición fija para móvil */}
+      <Box 
+        sx={{ 
+          position: {
+            xs: "sticky", // Sticky en móvil para mejor UX
+            sm: "static", // Normal en desktop
+          },
+          top: 0,
+          zIndex: 10,
+          backgroundColor: "background.default",
+          py: {
+            xs: 1, // Menos padding en móvil
+            sm: 0, // Sin padding extra en desktop
+          },
+          mb: {
+            xs: 2, // Margen inferior en móvil
+            sm: 3, // Margen normal en desktop
+          }
+        }}
+      >
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={onBack}
           sx={{
             textTransform: "none",
-            color: "#b8b4c7",
-            border: "1px solid rgba(255,255,255,0.15)",
+            color: "text.secondary",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            px: 2,
             "&:hover": {
-              color: "#e855ff",
-              borderColor: "#e855ff",
-              backgroundColor: "rgba(232,85,255,0.08)",
+              color: "primary.main",
+              borderColor: "primary.main",
+              backgroundColor: "action.hover",
             },
           }}
         >
@@ -102,212 +118,416 @@ export const GameConfig = ({ onBack, onContinue }) => {
         </Button>
       </Box>
 
-      {/* Tarjeta principal */}
-      <Card
-        variant="outlined"
+      {/* Contenido principal con scroll */}
+      <Box
         sx={{
-          p: 3,
-          borderRadius: 3,
-          border: "1px solid rgba(255,255,255,0.15)",
-          background: "linear-gradient(180deg, #151529 0%, #0d0d1a 100%)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
           flex: 1,
+          overflow: "auto",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
         }}
       >
-        {/* Contenido principal */}
-        <Box sx={{ flex: 1, overflowY: "auto", pr: 1, mb: 3 }}>
-          {/* --- Modo de juego --- */}
-          <Box mb={3}>
-            <Typography variant="h6" fontWeight={600} color="#fff" mb={1}>
-              Modo de Juego
-            </Typography>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              {[
-                { id: "classic", label: "Clásico", desc: "Tradicional" },
-                { id: "mystery", label: "Misterio", desc: "Más desafiante" },
-              ].map((mode) => (
-                <Button
-                  key={mode.id}
-                  fullWidth
-                  variant={selectedMode === mode.id ? "contained" : "outlined"}
-                  onClick={() => setSelectedMode(mode.id)}
-                  sx={{
-                    flex: 1,
-                    py: 2,
-                    flexDirection: "column",
-                    borderRadius: 2,
-                    borderWidth: 2,
-                    borderColor:
-                      selectedMode === mode.id
-                        ? "#e855ff"
-                        : "rgba(255,255,255,0.1)",
-                    boxShadow:
-                      selectedMode === mode.id
-                        ? "0 0 15px rgba(232,85,255,0.4)"
-                        : "none",
-                    "&:hover": {
-                      borderColor: "#e855ff",
-                      boxShadow: "0 0 15px rgba(232,85,255,0.3)",
-                    },
-                  }}
-                >
-                  <Typography
-                    fontWeight="bold"
-                    fontSize={{ xs: 14, sm: 16 }}
-                    color="#fff"
-                  >
-                    {mode.label}
-                  </Typography>
-                  <Typography variant="body2" color="#b8b4c7">
-                    {mode.desc}
-                  </Typography>
-                </Button>
-              ))}
-            </Box>
-          </Box>
-
-          {/* --- Jugadores --- */}
-          <Box mb={3}>
-            <Typography variant="h6" fontWeight={600} color="#fff">
-              Jugadores
-            </Typography>
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{
-                mt: 1,
-                height: 56,
-                borderRadius: 2,
-                borderColor: "rgba(255,255,255,0.15)",
-                color: "#fff",
-                "&:hover": {
-                  borderColor: "#e855ff",
-                  backgroundColor: "rgba(232, 85, 255, 0.1)",
-                },
-              }}
-              onClick={() => setIsPlayersModalOpen(true)}
-              startIcon={<GroupIcon sx={{ color: "#e855ff" }} />}
-            >
-              {players.length > 0
-                ? `${players.length} Jugador${players.length > 1 ? "es" : ""}`
-                : "Agregar Jugadores"}
-            </Button>
-          </Box>
-
-          {/* --- Categoría --- */}
-          <Box mb={3}>
-            <Typography variant="h6" fontWeight={600} color="#fff">
-              Categoría
-            </Typography>
-            <Button
-              variant="outlined"
-              fullWidth
-              sx={{
-                mt: 1,
-                height: 56,
-                borderRadius: 2,
-                borderColor: "rgba(255,255,255,0.15)",
-                color: "#fff",
-                "&:hover": {
-                  borderColor: "#e855ff",
-                  backgroundColor: "rgba(232, 85, 255, 0.1)",
-                },
-              }}
-              onClick={() => setIsCategoryModalOpen(true)}
-            >
-              {categoryName || "Seleccionar Categoría"}
-            </Button>
-          </Box>
-
-          {/* --- Impostores --- */}
-          <Box mb={3} textAlign="center">
-            <Typography variant="h6" fontWeight={600} color="#fff">
-              Cantidad de Impostores
-            </Typography>
-            <Box display="flex" justifyContent="center" gap={2} mt={1}>
-              <IconButton
-                onClick={() => setImpostorCount((p) => Math.max(1, p - 1))}
-                disabled={impostorCount <= 1}
-                sx={{ color: "#e855ff" }}
-              >
-                <RemoveIcon />
-              </IconButton>
-              <Typography variant="h4" color="#e855ff" fontWeight="bold">
-                {impostorCount}
-              </Typography>
-              <IconButton
-                onClick={() => setImpostorCount((p) => Math.min(maxImpostors, p + 1))}
-                disabled={impostorCount >= maxImpostors || players.length === 0}
-                sx={{ color: "#e855ff" }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Box>
-            <Typography variant="body2" color="#b8b4c7" mt={1}>
-              {players.length > 0
-                ? `Máximo ${maxImpostors} impostor${maxImpostors > 1 ? "es" : ""}`
-                : "Agrega jugadores para configurar impostores"}
-            </Typography>
-          </Box>
-
-          {/* --- Tiempo de Debate --- */}
-          <Box mb={3} textAlign="center">
-            <Typography variant="h6" fontWeight={600} color="#fff">
-              Tiempo de Debate
-            </Typography>
-            <Box display="flex" justifyContent="center" gap={2} mt={1}>
-              <IconButton
-                onClick={() => setDebateMinutes((p) => Math.max(1, p - 1))}
-                disabled={debateMinutes <= 1}
-                sx={{ color: "#e855ff" }}
-              >
-                <RemoveIcon />
-              </IconButton>
-              <Typography variant="h4" color="#e855ff" fontWeight="bold">
-                {debateMinutes}
-                <Typography variant="caption" color="#b8b4c7" sx={{ ml: 0.5 }}>
-                  min
-                </Typography>
-              </Typography>
-              <IconButton
-                onClick={() => setDebateMinutes((p) => Math.min(10, p + 1))}
-                disabled={debateMinutes >= 10}
-                sx={{ color: "#e855ff" }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Botón Iniciar */}
-        <Button
-          onClick={handleContinue}
-          fullWidth
-          variant="contained"
-          size="large"
-          startIcon={<PlayArrowIcon />}
-          disabled={!selectedCategory || players.length < minPlayers}
+        {/* Tarjeta principal */}
+        <Card
+          variant="outlined"
           sx={{
-            height: 56,
-            fontWeight: "bold",
-            borderRadius: 2,
-            fontSize: "1rem",
-            backgroundColor: "#e855ff",
-            color: "#fff",
-            boxShadow: "0 0 25px rgba(232,85,255,0.4)",
-            "&:hover": {
-              backgroundColor: "#d43de6",
-              boxShadow: "0 0 30px rgba(232,85,255,0.6)",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            p: {
+              xs: 2, // Menos padding en móvil
+              sm: 3, // Padding normal en desktop
+            },
+            borderRadius: 3,
+            border: "1px solid",
+            borderColor: "divider",
+            background: "background.paper",
+            boxShadow: {
+              xs: 1, // Sombra más suave en móvil
+              sm: 3, // Sombra normal en desktop
+            },
+            minHeight: {
+              xs: "auto", // Altura automática en móvil
+              sm: 400, // Altura mínima en desktop
             },
           }}
         >
-          Iniciar Juego
-        </Button>
-      </Card>
+          {/* Contenido desplazable */}
+          <Box 
+            sx={{ 
+              flex: 1,
+              overflow: "auto",
+              pr: {
+                xs: 0, // Sin padding derecho en móvil
+                sm: 1, // Pequeño padding en desktop
+              },
+              mb: 3,
+            }}
+          >
+            {/* --- Modo de juego --- */}
+            <Box mb={3}>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                color="text.primary" 
+                mb={1}
+                sx={{
+                  fontSize: {
+                    xs: "1.1rem", // Tamaño ligeramente más pequeño en móvil
+                    sm: "1.25rem", // Tamaño normal en desktop
+                  }
+                }}
+              >
+                Modo de Juego
+              </Typography>
+              <Box 
+                sx={{ 
+                  display: "flex", 
+                  gap: 2,
+                  flexDirection: {
+                    xs: "column", // Columna en móvil
+                    sm: "row",    // Fila en desktop
+                  }
+                }}
+              >
+                {[
+                  { id: "classic", label: "Clásico", desc: "Tradicional" },
+                  { id: "mystery", label: "Misterio", desc: "Más desafiante" },
+                ].map((mode) => (
+                  <Button
+                    key={mode.id}
+                    fullWidth
+                    variant={selectedMode === mode.id ? "contained" : "outlined"}
+                    onClick={() => setSelectedMode(mode.id)}
+                    sx={{
+                      flex: 1,
+                      py: {
+                        xs: 1.5, // Menos padding vertical en móvil
+                        sm: 2,   // Padding normal en desktop
+                      },
+                      flexDirection: "column",
+                      borderRadius: 2,
+                      borderWidth: 2,
+                      borderColor:
+                        selectedMode === mode.id
+                          ? "primary.main"
+                          : "divider",
+                      boxShadow:
+                        selectedMode === mode.id
+                          ? "0 0 15px rgba(232,85,255,0.4)"
+                          : "none",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        boxShadow: "0 0 15px rgba(232,85,255,0.3)",
+                      },
+                    }}
+                  >
+                    <Typography
+                      fontWeight="bold"
+                      sx={{
+                        fontSize: {
+                          xs: 14, 
+                          sm: 16
+                        },
+                        color: selectedMode === mode.id ? "white" : "text.primary",
+                      }}
+                    >
+                      {mode.label}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{
+                        color: selectedMode === mode.id ? "white" : "text.secondary",
+                        fontSize: {
+                          xs: 12,
+                          sm: 14
+                        }
+                      }}
+                    >
+                      {mode.desc}
+                    </Typography>
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+
+            {/* --- Jugadores --- */}
+            <Box mb={3}>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                color="text.primary"
+                sx={{
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.25rem",
+                  }
+                }}
+              >
+                Jugadores
+              </Typography>
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{
+                  mt: 1,
+                  height: {
+                    xs: 48, // Altura menor en móvil
+                    sm: 56  // Altura normal en desktop
+                  },
+                  borderRadius: 2,
+                  borderColor: "divider",
+                  color: "text.primary",
+                  "&:hover": {
+                    borderColor: "primary.main",
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => setIsPlayersModalOpen(true)}
+                startIcon={<GroupIcon sx={{ color: "primary.main" }} />}
+              >
+                {players.length > 0
+                  ? `${players.length} Jugador${players.length > 1 ? "es" : ""}`
+                  : "Agregar Jugadores"}
+              </Button>
+            </Box>
+
+            {/* --- Categoría --- */}
+            <Box mb={3}>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                color="text.primary"
+                sx={{
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.25rem",
+                  }
+                }}
+              >
+                Categoría
+              </Typography>
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{
+                  mt: 1,
+                  height: {
+                    xs: 48,
+                    sm: 56
+                  },
+                  borderRadius: 2,
+                  borderColor: "divider",
+                  color: "text.primary",
+                  "&:hover": {
+                    borderColor: "primary.main",
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => setIsCategoryModalOpen(true)}
+              >
+                <Typography
+                  sx={{
+                    fontSize: {
+                      xs: 14,
+                      sm: 16
+                    },
+                    color: categoryName ? "text.primary" : "text.secondary",
+                  }}
+                >
+                  {categoryName || "Seleccionar Categoría"}
+                </Typography>
+              </Button>
+            </Box>
+
+            {/* --- Impostores --- */}
+            <Box mb={3} textAlign="center">
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                color="text.primary"
+                sx={{
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.25rem",
+                  }
+                }}
+              >
+                Cantidad de Impostores
+              </Typography>
+              <Box display="flex" justifyContent="center" alignItems="center" gap={2} mt={1}>
+                <IconButton
+                  onClick={() => setImpostorCount((p) => Math.max(1, p - 1))}
+                  disabled={impostorCount <= 1}
+                  sx={{ 
+                    color: "primary.main",
+                    fontSize: {
+                      xs: "1.5rem", // Iconos más pequeños en móvil
+                      sm: "2rem"    // Tamaño normal en desktop
+                    }
+                  }}
+                >
+                  <RemoveIcon fontSize="inherit" />
+                </IconButton>
+                <Typography 
+                  variant="h4" 
+                  color="primary.main" 
+                  fontWeight="bold"
+                  sx={{
+                    fontSize: {
+                      xs: "2rem", // Número más pequeño en móvil
+                      sm: "2.5rem" // Tamaño normal en desktop
+                    }
+                  }}
+                >
+                  {impostorCount}
+                </Typography>
+                <IconButton
+                  onClick={() => setImpostorCount((p) => Math.min(maxImpostors, p + 1))}
+                  disabled={impostorCount >= maxImpostors || players.length === 0}
+                  sx={{ 
+                    color: "primary.main",
+                    fontSize: {
+                      xs: "1.5rem",
+                      sm: "2rem"
+                    }
+                  }}
+                >
+                  <AddIcon fontSize="inherit" />
+                </IconButton>
+              </Box>
+              <Typography 
+                variant="body2" 
+                color="text.secondary" 
+                mt={1}
+                sx={{
+                  fontSize: {
+                    xs: 12,
+                    sm: 14
+                  }
+                }}
+              >
+                {players.length > 0
+                  ? `Máximo ${maxImpostors} impostor${maxImpostors > 1 ? "es" : ""}`
+                  : "Agrega jugadores para configurar impostores"}
+              </Typography>
+            </Box>
+
+            {/* --- Tiempo de Debate --- */}
+            <Box mb={3} textAlign="center">
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                color="text.primary"
+                sx={{
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.25rem",
+                  }
+                }}
+              >
+                Tiempo de Debate
+              </Typography>
+              <Box display="flex" justifyContent="center" alignItems="center" gap={2} mt={1}>
+                <IconButton
+                  onClick={() => setDebateMinutes((p) => Math.max(1, p - 1))}
+                  disabled={debateMinutes <= 1}
+                  sx={{ 
+                    color: "primary.main",
+                    fontSize: {
+                      xs: "1.5rem",
+                      sm: "2rem"
+                    }
+                  }}
+                >
+                  <RemoveIcon fontSize="inherit" />
+                </IconButton>
+                <Box display="flex" alignItems="baseline">
+                  <Typography 
+                    variant="h4" 
+                    color="primary.main" 
+                    fontWeight="bold"
+                    sx={{
+                      fontSize: {
+                        xs: "2rem",
+                        sm: "2.5rem"
+                      }
+                    }}
+                  >
+                    {debateMinutes}
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    color="text.secondary" 
+                    sx={{ 
+                      ml: 0.5,
+                      fontSize: {
+                        xs: 12,
+                        sm: 14
+                      }
+                    }}
+                  >
+                    min
+                  </Typography>
+                </Box>
+                <IconButton
+                  onClick={() => setDebateMinutes((p) => Math.min(10, p + 1))}
+                  disabled={debateMinutes >= 10}
+                  sx={{ 
+                    color: "primary.main",
+                    fontSize: {
+                      xs: "1.5rem",
+                      sm: "2rem"
+                    }
+                  }}
+                >
+                  <AddIcon fontSize="inherit" />
+                </IconButton>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Botón Iniciar - posición fija en móvil */}
+          <Box
+            sx={{
+              position: {
+                xs: "sticky", // Sticky en móvil para mejor accesibilidad
+                sm: "static", // Normal en desktop
+              },
+              bottom: 0,
+              backgroundColor: "background.paper",
+              pt: {
+                xs: 2, // Padding superior en móvil
+                sm: 0, // Sin padding en desktop
+              },
+            }}
+          >
+            <Button
+              onClick={handleContinue}
+              fullWidth
+              variant="contained"
+              size="large"
+              startIcon={<PlayArrowIcon />}
+              disabled={!selectedCategory || players.length < minPlayers}
+              sx={{
+                height: {
+                  xs: 48, // Altura menor en móvil
+                  sm: 56  // Altura normal en desktop
+                },
+                fontWeight: "bold",
+                borderRadius: 2,
+                fontSize: {
+                  xs: "0.9rem", // Texto más pequeño en móvil
+                  sm: "1rem"    // Tamaño normal en desktop
+                },
+                boxShadow: 3,
+              }}
+            >
+              Iniciar Juego
+            </Button>
+          </Box>
+        </Card>
+      </Box>
 
       {/* Modales */}
       <PlayersModal
@@ -322,7 +542,7 @@ export const GameConfig = ({ onBack, onContinue }) => {
         onSelect={handleSelectCategory}
         selectedCategory={selectedCategory}
       />
-    </Container>
+    </Box>
   );
 };
 

@@ -30,7 +30,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     background: {
-      default: "#0a0a14", // fondo general más oscuro
+      default: "#140a0aff", // fondo general más oscuro
       paper: "#111122", // fondo de las cards
     },
     primary: {

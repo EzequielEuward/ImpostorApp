@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
   Box,
-  Container,
   Typography,
   Card,
   CardContent,
   Button,
   useTheme,
   Alert,
+  useMediaQuery,
 } from "@mui/material";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -16,6 +16,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTimeUp = timeLeft <= 0;
 
   const handleVote = () => {
@@ -23,82 +24,127 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
   };
 
   return (
-    <Container
-      maxWidth="sm"
+    <Box
       sx={{
-        py: 4,
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        gap: 4,
-        height: "100vh",
-        border: "1px solid rgba(255,255,255,0.08)",
-        background: "linear-gradient(180deg, #151529 0%, #0d0d1a 100%)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+        overflow: "hidden",
       }}
     >
-      {/* Botones superiores */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: -2 }}>
+      {/* Botones superiores - COMPACTOS */}
+      <Box 
+        sx={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          mb: 1, // Reducido
+          flexDirection: {
+            xs: "column",
+            sm: "row",
+          },
+          gap: 1,
+          flexShrink: 0, // Evita que crezca
+        }}
+      >
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={onBack}
           variant="outlined"
           disabled={isTimeUp}
+          size={isMobile ? "small" : "medium"} // Tamaño responsive
           sx={{
-            borderColor: isTimeUp ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)",
-            color: "#fff",
+            borderColor: isTimeUp ? "divider" : "primary.main",
+            color: isTimeUp ? "text.disabled" : "text.primary",
             "&:hover": !isTimeUp && {
-              borderColor: "secondary.main",
-              backgroundColor: "rgba(255,75,139,0.08)",
+              borderColor: "primary.main",
+              backgroundColor: "action.hover",
+            },
+            width: {
+              xs: "100%",
+              sm: "auto",
             },
           }}
         >
-          {isTimeUp ? "Tiempo Agotado" : "Volver al Debate"}
+          {isTimeUp ? "Tiempo Agotado" : "Volver"}
         </Button>
 
         <Button
           startIcon={<RestartAltIcon />}
           onClick={onRestart}
           variant="outlined"
+          size={isMobile ? "small" : "medium"} // Tamaño responsive
           sx={{
-            borderColor: "rgba(255,255,255,0.25)",
-            color: "#fff",
+            borderColor: "divider",
+            color: "text.primary",
             "&:hover": {
-              borderColor: "secondary.main",
-              backgroundColor: "rgba(255,75,139,0.08)",
+              borderColor: "primary.main",
+              backgroundColor: "action.hover",
+            },
+            width: {
+              xs: "100%",
+              sm: "auto",
             },
           }}
         >
-          Reiniciar Juego
+          Reiniciar
         </Button>
       </Box>
 
       {isTimeUp && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
+        <Alert 
+          severity="warning" 
+          sx={{ 
+            mb: 1, // Reducido
+            fontSize: {
+              xs: "0.75rem", // Más compacto
+              sm: "0.875rem",
+            },
+            py: 0.5, // Menos padding vertical
+            flexShrink: 0, // Evita que crezca
+          }}
+        >
           El tiempo de debate ha finalizado. Deben proceder a la votación.
         </Alert>
       )}
 
-      {/* Encabezado */}
-      <Box textAlign="center">
+      {/* Encabezado - MÁS COMPACTO */}
+      <Box 
+        textAlign="center"
+        sx={{
+          mb: 1, // Reducido
+          flexShrink: 0, // Evita que crezca
+        }}
+      >
         <Box
           sx={{
-            width: 72,
-            height: 72,
+            width: {
+              xs: 48, // Más pequeño
+              sm: 60,
+            },
+            height: {
+              xs: 48,
+              sm: 60,
+            },
             mx: "auto",
-            mb: 2,
+            mb: 1, // Reducido
             borderRadius: "50%",
-            bgcolor: "secondary.main",
+            bgcolor: "primary.main",
             opacity: 0.15,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 0 25px rgba(232,85,255,0.3)",
+            boxShadow: "0 0 20px rgba(232,85,255,0.3)",
           }}
         >
           <HowToVoteIcon
             sx={{
-              fontSize: 36,
-              color: "secondary.main",
+              fontSize: {
+                xs: 24, // Más pequeño
+                sm: 30,
+              },
+              color: "primary.main",
               filter: "drop-shadow(0 0 6px rgba(232,85,255,0.5))",
             }}
           />
@@ -108,53 +154,83 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
           variant="h4"
           fontWeight="bold"
           sx={{
-            color: "#fff",
+            color: "text.primary",
             textShadow: "0 0 10px rgba(232,85,255,0.6)",
+            fontSize: {
+              xs: "1.5rem", // Más compacto
+              sm: "1.75rem",
+            },
+            mb: 0.5, // Reducido
           }}
         >
           Votación
         </Typography>
-        <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.7)" }}>
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            color: "text.secondary",
+            fontSize: {
+              xs: "0.8rem", // Más compacto
+              sm: "0.9rem",
+            }
+          }}
+        >
           {isTimeUp
             ? "El tiempo ha terminado. Voten al impostor."
             : "¿Quién creen que es el impostor?"}
         </Typography>
       </Box>
 
-      {/* Tarjeta principal */}
+      {/* Tarjeta principal - MEJOR MANEJO DEL ESPACIO */}
       <Card
         variant="outlined"
         sx={{
-          p: 3,
-          borderRadius: 3,
-          border: "1px solid rgba(255,255,255,0.15)",
-          background: "linear-gradient(180deg, #151529 0%, #0d0d1a 100%)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
           flex: 1,
           display: "flex",
           flexDirection: "column",
+          minHeight: 0, // IMPORTANTE: Permite que el contenido se reduzca
+          p: {
+            xs: 1.5, // Menos padding
+            sm: 2,
+          },
+          borderRadius: 2,
+          border: "1px solid",
+          borderColor: "divider",
+          background: "background.paper",
+          boxShadow: {
+            xs: 1,
+            sm: 2,
+          },
         }}
       >
-        <CardContent sx={{ flex: 1, p: 0, "&:last-child": { pb: 0 } }}>
-          {/* Lista de jugadores */}
+        <CardContent 
+          sx={{ 
+            flex: 1, 
+            p: 0, 
+            "&:last-child": { pb: 0 },
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0, // IMPORTANTE: Permite que el contenido se reduzca
+          }}
+        >
+          {/* Lista de jugadores - CON ALTURA MÁXIMA */}
           <Box
             sx={{
               flex: 1,
               overflowY: "auto",
-              maxHeight: "450px",
-              mb: 2,
-              pr: 1,
-              "&::-webkit-scrollbar": { width: "6px" },
+              mb: 1.5,
+              minHeight: 0, // IMPORTANTE: Permite scroll
+              "&::-webkit-scrollbar": { 
+                width: "4px",
+              },
               "&::-webkit-scrollbar-track": {
-                background: "rgba(255,255,255,0.05)",
-                borderRadius: "3px",
+                background: "action.hover",
+                borderRadius: "2px",
               },
               "&::-webkit-scrollbar-thumb": {
-                background: "rgba(232,85,255,0.3)",
-                borderRadius: "3px",
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "rgba(232,85,255,0.5)",
+                background: "primary.main",
+                borderRadius: "2px",
+                opacity: 0.5,
               },
             }}
           >
@@ -163,35 +239,43 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
                 key={player.id}
                 onClick={() => !isTimeUp && setSelectedPlayer(player.id)}
                 sx={{
-                  px: 3,
-                  py: 2,
-                  mb: 1,
-                  width: "90%",
+                  px: {
+                    xs: 1.5,
+                    sm: 2,
+                  },
+                  py: {
+                    xs: 1.25,
+                    sm: 1.5,
+                  },
+                  mb: 0.75,
+                  width: "100%",
                   justifyContent: "center",
-                  mx: "auto",
                   display: "flex",
                   alignItems: "center",
-                  borderRadius: 2,
+                  borderRadius: 1.5,
                   textAlign: "center",
                   cursor: isTimeUp ? "default" : "pointer",
-                  color: "#fff",
                   transition: "all 0.25s ease-in-out",
                   border:
                     selectedPlayer === player.id
-                      ? "1px solid #ff4b8b"
-                      : "1px solid rgba(255,255,255,0.15)",
+                      ? "2px solid"
+                      : "1px solid",
+                  borderColor:
+                    selectedPlayer === player.id
+                      ? "primary.main"
+                      : "divider",
                   background:
                     selectedPlayer === player.id
-                      ? "linear-gradient(90deg, rgba(232,85,255,0.25), rgba(255,75,139,0.2))"
-                      : "rgba(255,255,255,0.05)",
+                      ? "rgba(232,85,255,0.1)"
+                      : "action.hover",
                   boxShadow:
                     selectedPlayer === player.id
-                      ? "0 0 16px rgba(255,75,139,0.5)"
+                      ? "0 0 16px rgba(232,85,255,0.3)"
                       : "none",
                   transform: selectedPlayer === player.id ? "scale(1.02)" : "scale(1)",
                   "&:hover": !isTimeUp && {
-                    borderColor: "#ff4b8b",
-                    background: "linear-gradient(90deg, rgba(232,85,255,0.15), rgba(255,75,139,0.15))",
+                    borderColor: "primary.main",
+                    background: "rgba(232,85,255,0.05)",
                   },
                   opacity: isTimeUp ? 0.7 : 1,
                 }}
@@ -199,12 +283,16 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
                 <Typography
                   variant="h6"
                   sx={{
-                    color: selectedPlayer === player.id ? "#ff4b8b" : "#fff",
+                    color: selectedPlayer === player.id ? "primary.main" : "text.primary",
                     fontWeight: selectedPlayer === player.id ? 600 : 500,
                     textShadow:
                       selectedPlayer === player.id
-                        ? "0 0 8px rgba(255,75,139,0.6)"
-                        : "0 0 4px rgba(255,255,255,0.3)",
+                        ? "0 0 8px rgba(232,85,255,0.4)"
+                        : "none",
+                    fontSize: {
+                      xs: "0.9rem",
+                      sm: "1rem",
+                    }
                   }}
                 >
                   {player.name}
@@ -213,26 +301,39 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
             ))}
           </Box>
 
-          {/* Botón de confirmación */}
-          <Box mt={2}>
+          {/* Botón de confirmación - SIEMPRE VISIBLE */}
+          <Box 
+            sx={{
+              position: "sticky",
+              bottom: 0,
+              backgroundColor: "background.paper",
+              pt: 1,
+              flexShrink: 0, // No se reduce
+            }}
+          >
             <Button
               onClick={handleVote}
               disabled={!selectedPlayer}
               fullWidth
-              size="large"
+              size={isMobile ? "medium" : "large"}
               variant="contained"
-              color="secondary"
               sx={{
-                height: 56,
-                fontSize: "1.1rem",
+                height: {
+                  xs: 44,
+                  sm: 48
+                },
+                fontSize: {
+                  xs: "0.85rem",
+                  sm: "1rem",
+                },
                 fontWeight: 600,
-                boxShadow: "0 0 16px rgba(255,75,139,0.4)",
+                boxShadow: 2,
                 "&:hover": {
-                  boxShadow: "0 0 24px rgba(255,75,139,0.6)",
+                  boxShadow: 4,
                 },
                 "&:disabled": {
-                  bgcolor: "rgba(255,255,255,0.08)",
-                  color: "rgba(255,255,255,0.4)",
+                  bgcolor: "action.disabled",
+                  color: "text.disabled",
                 },
               }}
             >
@@ -241,7 +342,7 @@ export const VotingScreen = ({ players, onVote, onBack, timeLeft, onRestart }) =
           </Box>
         </CardContent>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
